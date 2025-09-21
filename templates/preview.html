@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PredictAI | Temperature Preview</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary: #212121;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: var(--secondary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+
+        .navbar {
+            background: linear-gradient(120deg, var(--primary), var(--primary-dark));
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.6rem;
+            animation: pulse 2s infinite;
+        }
+
+
+        .container {
+            max-width: 1400px;
+            padding: 0 20px;
+        }
+
+        .dashboard-header {
+            margin: 30px 0 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .dashboard-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin: 0;
+        }
+
+
+        .today-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            animation: fadeIn 0.8s ease-out;
+            border-left: 5px solid var(--primary);
+        }
+
+        .today-card::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(26, 115, 232, 0.05);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .today-card-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .today-card h3 {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+            color: #5f6368;
+        }
+
+        .today-card .temp-value {
+            font-weight: 800;
+            font-size: 3.5rem;
+            margin: 0;
+            color: var(--secondary);
+            line-height: 1;
+        }
+
+        .today-card .temp-unit {
+            font-size: 1.8rem;
+            color: #5f6368;
+            vertical-align: super;
+        }
+
+        .today-card .weather-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-right: 15px;
+        }
+
+        .today-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .today-stat {
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(26, 115, 232, 0.05);
+            flex: 1;
+            min-width: 120px;
+            transition: var(--transition);
+        }
+
+        .today-stat:hover {
+            transform: translateY(-5px);
+            background: rgba(26, 115, 232, 0.1);
+        }
+
+        .today-stat .value {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--secondary);
+        }
+
+        .today-stat .label {
+            font-size: 0.9rem;
+            color: #5f6368;
+            margin-top: 5px;
+        }
+
+
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            animation: slideUp 0.6s ease-out;
+            border-top: 4px solid var(--primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; border-top-color: #1a73e8; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; border-top-color: #34a853; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; border-top-color: #ea4335; }
+
+        .stat-card h5 {
+            font-weight: 600;
+            color: #5f6368;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-card h5 i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .stat-card .value {
+            font-weight: 700;
+            font-size: 2rem;
+            margin: 5px 0;
+            color: var(--secondary);
+        }
+
+        .stat-card .unit {
+            font-size: 1.2rem;
+            color: #5f6368;
+        }
+
+
+        .prediction-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+            border-right: 5px solid #34a853;
+        }
+
+        .prediction-card::before {
+            content: "";
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(52, 168, 83, 0.05);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .prediction-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .prediction-card h3 {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin: 0;
+        }
+
+        .prediction-card .temp-value {
+            font-weight: 800;
+            font-size: 3rem;
+            color: var(--secondary);
+            margin: 10px 0 5px;
+            line-height: 1;
+        }
+
+        .prediction-card .temp-unit {
+            font-size: 1.8rem;
+            color: #5f6368;
+            vertical-align: super;
+        }
+
+
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            animation: slideUp 0.7s ease-out;
+        }
+
+        .chart-header {
+            margin-bottom: 25px;
+        }
+
+        .chart-header h4 {
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin: 0;
+        }
+
+
+        .btn-primary {
+            background: linear-gradient(120deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 12px;
+            padding: 12px 25px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(26, 115, 232, 0.4);
+        }
+
+        .btn-primary i {
+            margin-right: 8px;
+        }
+
+
+        footer {
+
+        color: #000000;
+        padding: 30px 0;
+        text-align: center;
+        margin-top: 60px;
+        border-radius: 20px;
+        }
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+
+        @media (max-width: 768px) {
+            .stats-container {
+                flex-direction: column;
+            }
+
+            .stat-card {
+                min-width: 100%;
+            }
+
+            .today-card-content {
+                flex-direction: column;
+            }
+
+            .today-stats {
+                flex-direction: column;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .today-card .temp-value {
+                font-size: 2.8rem;
+            }
+
+            .prediction-card .temp-value {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class=""></i>PredictAI
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Uploaded Data Preview</h1>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-arrow-left me-2"></i>Upload Another File
+            </a>
+        </div>
+
+
+
+        <div class="today-card p-4 text-center">
+            <h3 class="mb-3">TODAY'S WEATHER</h3>
+            <div class="d-flex justify-content-center align-items-center gap-2">
+                <i class="fas fa-sun weather-icon"></i>
+                <span class="temp-value">{{ temps[-1] if max_temp is not none else 'N/A' }}</span>
+                <span class="temp-unit">°C</span>
+            </div>
+
+
+            <div class="today-stats mt-4 d-flex justify-content-around">
+                <div class="today-stat text-center">
+                    <div class="value">{{ "%.2f"|format(avg_temp) if avg_temp is not none else 'N/A' }}</div>
+                    <div class="label">Average Temp</div>
+                </div>
+                <div class="today-stat text-center">
+                    <div class="value">{{ max_temp if max_temp is not none else 'N/A' }}</div>
+                    <div class="label">Max Temp</div>
+                </div>
+                <div class="today-stat text-center">
+                    <div class="value">{{ min_temp if min_temp is not none else 'N/A' }}</div>
+                    <div class="label">Min Temp</div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="prediction-card d-flex flex-column align-items-center text-center p-4">
+            <div class="prediction-card-header d-flex align-items-center justify-content-center mb-3">
+                <i class="fas fa-chart-line me-2 text-success" style="font-size: 1.8rem;"></i>
+                <h3 class="mb-0">Tomorrow's Temperature Forecast</h3>
+            </div>
+
+            <div class="d-flex align-items-end justify-content-center mb-2">
+                <span class="temp-value">{{ tomorrow_temp }}</span>
+                <span class="temp-unit">°C</span>
+            </div>
+
+            <p class="text-muted">Based on uploaded data analysis and predictive modeling</p>
+        </div>
+
+
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h4>Temperature Over Time</h4>
+            </div>
+            {% if dates and temps %}
+            <canvas id="tempChart"></canvas>
+            {% else %}
+            <p class="text-muted fst-italic">No detailed chart data available for manual input.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer>
+    <div class="container">
+        <h5>PredictAI</h5>
+        <p>Made by Muhammad Abdullah Awan &copy; 2025</p>
+
+    </div>
+    </footer>
+
+    {% if dates and temps %}
+    <script>
+        const tempCtx = document.getElementById('tempChart').getContext('2d');
+        const tempChart = new Chart(tempCtx, {
+            type: 'line',
+            data: {
+                labels: {{ dates | tojson }},
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: {{ temps | tojson }},
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    x: { title: { display: true, text: 'Date' }},
+                    y: { title: { display: true, text: 'Temperature (°C)' }, beginAtZero: false }
+                }
+            }
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
+
+
+
+
+
+
+

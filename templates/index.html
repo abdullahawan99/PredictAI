@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>PredictAI</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <style>
+            :root {
+                --primary: #4361ee;
+                --secondary: #3f37c9;
+                --accent: #4895ef;
+                --light: #f8f9fa;
+                --dark: #212529;
+
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            body,
+            html {
+                height: 100%;
+                margin: 0;
+                background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+                color: #333;
+                overflow-x: hidden;
+                transition: all 0.5s ease;
+            }
+
+
+
+            .hero {
+                padding: 100px 0;
+                background: transparent;
+            }
+
+            .hero-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 40px;
+            }
+
+            .hero-text {
+                flex: 1;
+                animation: fadeInUp 1s ease-out;
+            }
+
+            .hero-image {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                animation: fadeIn 1.5s ease-out;
+            }
+
+            .ai-visual {
+                width: 100%;
+                max-width: 500px;
+                height: 350px;
+                background: linear-gradient(145deg, #e0e7ff, #d5e3ff);
+                border-radius: 20px;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 20px 40px rgba(67, 97, 238, 0.15);
+            }
+
+            .pulse {
+                position: absolute;
+                width: 150px;
+                height: 150px;
+                background: var(--accent);
+                border-radius: 50%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0.2;
+                animation: pulse 3s infinite;
+            }
+
+            .node {
+                position: absolute;
+                width: 40px;
+                height: 40px;
+                background: var(--primary);
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: white;
+                font-weight: bold;
+                box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+                font-weight: 700;
+                margin-bottom: 20px;
+                color: var(--dark);
+                line-height: 1.2;
+            }
+
+            .hero h1 span {
+                color: var(--primary);
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+                color: #555;
+                margin-bottom: 30px;
+                line-height: 1.7;
+            }
+
+            .btn-primary {
+                background: var(--primary);
+                border: none;
+                padding: 12px 30px;
+                font-size: 1.1rem;
+                border-radius: 50px;
+                transition: all 0.3s;
+                box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+            }
+
+            .btn-primary:hover {
+                background: var(--secondary);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+            }
+
+            .btn-success {
+                background: var(--primary);
+                border: none;
+                padding: 12px 30px;
+                font-size: 1.1rem;
+                border-radius: 50px;
+                transition: all 0.3s;
+                box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+            }
+
+            .btn-success:hover {
+                background: var(--secondary);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+            }
+
+            .btn-outline-secondary {
+                color: #6c757d;
+                border: 2px solid #6c757d;
+                padding: 10px 28px;
+                font-size: 1.1rem;
+                border-radius: 50px;
+                transition: all 0.3s;
+                background: transparent;
+            }
+
+            .btn-outline-secondary:hover {
+                background: #6c757d;
+                color: white;
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+            }
+
+            .btn-outline-dark {
+                color: var(--dark);
+                border: 2px solid var(--dark);
+                padding: 10px 28px;
+                font-size: 1.1rem;
+                border-radius: 50px;
+                transition: all 0.3s;
+                background: transparent;
+            }
+
+            .btn-outline-dark:hover {
+                background: var(--dark);
+                color: white;
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(33, 37, 41, 0.3);
+            }
+
+            .btn-group {
+                display: flex;
+                gap: 15px;
+                margin-top: 20px;
+                flex-wrap: wrap;
+            }
+
+
+            .how-it-works {
+                padding: 100px 0;
+                background: white;
+                border-radius: 30px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+                margin: 40px 0;
+            }
+
+            .section-title {
+                text-align: center;
+                margin-bottom: 60px;
+            }
+
+            .section-title h2 {
+                font-size: 2.5rem;
+                color: var(--dark);
+                margin-bottom: 15px;
+                font-weight: 700;
+            }
+
+            .section-title p {
+                font-size: 1.2rem;
+                color: #666;
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            .steps {
+                display: flex;
+                justify-content: center;
+                gap: 30px;
+                flex-wrap: wrap;
+            }
+
+            .step-card {
+                background: white;
+                border-radius: 20px;
+                padding: 40px 30px;
+                text-align: center;
+                max-width: 350px;
+                transition: all 0.4s;
+                border: 1px solid #eee;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                position: relative;
+                overflow: hidden;
+                z-index: 1;
+            }
+
+            .step-card:hover {
+                transform: translateY(-15px);
+                box-shadow: 0 15px 30px rgba(67, 97, 238, 0.15);
+                border-color: rgba(67, 97, 238, 0.2);
+            }
+
+            .step-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 5px;
+                background: linear-gradient(to right, var(--primary), var(--accent));
+                z-index: -1;
+                transition: height 0.4s;
+            }
+
+            .step-card:hover::before {
+                height: 100%;
+            }
+
+            .step-icon {
+                width: 90px;
+                height: 90px;
+                background: rgba(67, 97, 238, 0.1);
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0 auto 25px;
+                font-size: 36px;
+                color: var(--primary);
+                transition: all 0.4s;
+            }
+
+            .step-card:hover .step-icon {
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                transform: scale(1.1);
+            }
+
+            .step-card h3 {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+                color: var(--dark);
+                transition: color 0.4s;
+            }
+
+            .step-card:hover h3 {
+                color: white;
+            }
+
+            .step-card p {
+                color: #666;
+                line-height: 1.7;
+                transition: color 0.4s;
+            }
+
+            .step-card:hover p {
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+
+            .sample-preview {
+                padding: 100px 0;
+            }
+
+            .preview-container {
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            }
+
+            .chart-container {
+                height: 400px;
+                margin-top: 30px;
+            }
+
+            .chart-title {
+                text-align: center;
+                font-size: 1.8rem;
+                margin-bottom: 30px;
+                color: var(--dark);
+            }
+
+
+            .options-section {
+                padding: 100px 0;
+                background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%);
+                border-radius: 30px;
+            }
+
+            .options-container {
+                max-width: 800px;
+                margin: 0 auto;
+                background: white;
+                padding: 40px;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            }
+
+            .option-btn {
+                display: flex;
+                align-items: center;
+                padding: 20px 25px;
+                margin-bottom: 20px;
+                border-radius: 15px;
+                transition: all 0.3s;
+                text-decoration: none;
+                border: 2px solid transparent;
+            }
+
+            .option-btn:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                border-color: var(--primary);
+            }
+
+            .option-btn i {
+                font-size: 28px;
+                width: 60px;
+                text-align: center;
+                margin-right: 20px;
+            }
+
+            .option-btn .btn-text {
+                flex: 1;
+            }
+
+            .option-btn .btn-text h3 {
+                margin-bottom: 5px;
+                font-weight: 600;
+            }
+
+            .option-btn .btn-text p {
+                color: #666;
+                margin: 0;
+                font-size: 0.95rem;
+            }
+
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: translate(-50%, -50%) scale(0.8);
+                    opacity: 0.7;
+                }
+
+                50% {
+                    transform: translate(-50%, -50%) scale(1.2);
+                    opacity: 0.3;
+                }
+
+                100% {
+                    transform: translate(-50%, -50%) scale(0.8);
+                    opacity: 0.7;
+                }
+            }
+
+
+            footer {
+                background: var(--sidebar-bg);
+                color: #333333;
+                padding: 20px 0;
+                text-align: center;
+                margin-top: 60px;
+            }
+
+            .predictai-title {
+                font-weight: 700;
+                font-size: 1.25rem;
+                color: #000;
+            }
+
+            .main-header {
+                width: 100%;
+                background: transparent;
+                padding: 1rem 2rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-family: 'Inter', sans-serif;
+                border-bottom: 0px solid #ddd;
+                margin-bottom: 1.5rem;
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+                font-weight: 700;
+                font-size: 1.5rem;
+                color: #000;
+            }
+
+            .logo-icon {
+                font-size: 2rem;
+                color: #0d6efd;
+            }
+
+            .logo-img {
+                width: 55px;
+                height: 55px;
+                object-fit: contain;
+            }
+
+            .header-right {
+                display: flex;
+                transform: translateX(-20px);
+            }
+
+            .header-right a {
+                margin-left: 1.5rem;
+                text-decoration: none;
+                font-weight: 500;
+                color: #333;
+                position: relative;
+                transition: color 0.3s ease;
+            }
+
+            .header-right a::after {
+                content: '';
+                position: absolute;
+                bottom: -4px;
+                left: 0;
+                height: 2px;
+                width: 100%;
+                background-color: #0d6efd;
+                transform: scaleX(0);
+                transform-origin: left;
+                transition: transform 0.3s ease;
+            }
+
+            .header-right a:hover,
+            .header-right a.active {
+                color: #0d6efd;
+            }
+
+            .header-right a:hover::after,
+            .header-right a.active::after {
+                transform: scaleX(1);
+            }
+
+            .site-name .highlight {
+                color: #4361EE;
+            }
+
+
+            @media (max-width: 992px) {
+                .hero-content {
+                    flex-direction: column;
+                }
+
+                .hero-text,
+                .hero-image {
+                    text-align: center;
+                    width: 100%;
+                }
+
+                .btn-group {
+                    justify-content: center;
+                }
+
+                .hero h1 {
+                    font-size: 2.8rem;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .steps {
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .step-card {
+                    max-width: 100%;
+                }
+
+                .hero h1 {
+                    font-size: 2.3rem;
+                }
+
+                .hero p {
+                    font-size: 1.1rem;
+                }
+
+                .option-btn {
+                    flex-direction: column;
+                    text-align: center;
+                }
+
+                .option-btn i {
+                    margin-right: 0;
+                    margin-bottom: 15px;
+                }
+
+
+                .main-content {
+                    margin-left: 0;
+                }
+
+
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <header class="main-header">
+            <div class="header-left">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
+                <span class="site-name">Predict<span class="highlight">AI</span>
+                </span>
+            </div>
+            <nav class="header-right">
+                <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="/temperature" class="{% if request.path.startswith('/temperature') %}active{% endif %}">Temperature</a>
+                <a href="/sales" class="{% if request.path.startswith('/sales') %}active{% endif %}">Sales</a>
+            </nav>
+        </header>
+
+
+
+        <div class="main-content">
+
+            <section class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <div class="hero-text">
+                            <h1>Predict the Future with <span>AI-Powered Weather & Sales Insights</span></h1>
+                            <p>PredictAI offers two powerful prediction modes: automatic forecasting using real-time API data and linear regression models for accurate temperature predictions, and manual-input-based sales forecasting to tailor insights specifically to your business data.</p>
+                            <div class="btn-group">
+                                <a href="/temperature" class="btn btn-primary">Temperature Prediction</a>
+                                <a href="/sales" class="btn btn-success">Sales Prediction</a>
+
+
+                            </div>
+                        </div>
+                        <div class="hero-image">
+                            <div class="ai-visual">
+                                <div class="pulse"></div>
+                                <div class="node" style="top: 30%; left: 30%;">AI</div>
+                                <div class="node" style="top: 30%; left: 70%;">ML</div>
+                                <div class="node" style="top: 70%; left: 50%;">Data</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="how-it-works">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>How It Works</h2>
+                        <p>Our three-step process makes data analysis simple and powerful</p>
+                    </div>
+                    <div class="steps">
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <h3>Upload Data</h3>
+                            <p>Easily upload your weather or sales data in CSV format or manually enter your weather data to start your prediction</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h3>AI Analysis</h3>
+                            <p>Our advanced machine learning algorithms analyze your data to provide accurate insights.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h3>View Predictions</h3>
+                            <p>Get clear, interactive forecasts for temperature and sales to make informed decisions.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="sample-preview">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Sample Data Insights</h2>
+                        <p>Interactive preview of the insights our platform can generate</p>
+                    </div>
+                    <div class="preview-container">
+                        <div class="chart-title">Temperature Forecast & Trend Analysis</div>
+                        <div class="chart-container">
+                            <canvas id="insightChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="options-section">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Prediction Modules</h2>
+                        <p>Select the prediction module that meets your business needs</p>
+                    </div>
+                    <div class="options-container">
+                        <a href="/temperature" class="option-btn" style="background: rgba(67, 97, 238, 0.1);">
+                            <i class="fas fa-thermometer-half text-primary"></i>
+                            <div class="btn-text">
+                                <h3 class="text-primary">Temperature Prediction</h3>
+                                <p>Forecast temperature patterns and weather trends for agricultural or business planning</p>
+                            </div>
+                            <i class="fas fa-arrow-right text-primary"></i>
+                        </a>
+
+                        <a href="/sales" class="option-btn" style="background: rgba(67, 97, 238, 0.1);">
+                            <i class="fas fa-chart-line text-success"></i>
+                            <div class="btn-text">
+                                <h3 class="text-success">Sales Prediction</h3>
+                                <p>Predict future sales trends and optimize inventory management with AI forecasting</p>
+                            </div>
+                            <i class="fas fa-arrow-right text-success"></i>
+                        </a>
+
+
+
+
+                    </div>
+                </div>
+            </section>
+
+
+            <footer class="text-center py-4">
+                <div class="container">
+                    <p class="predictai-title mb-1">PredictAI</p>
+                    <p class="mb-0">Made by <strong>Muhammad Abdullah Awan</strong> &copy; 2025</p>
+                </div>
+            </footer>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctx = document.getElementById('insightChart').getContext('2d');
+
+                // Sample data
+                const Dates = ['10 Mar', '11 Mar', '12 Mar', '13 Mar', '14 Mar', '15 Mar'];
+                const actualData = [33, 30, 36, 32, 35, 37];
+                const predictedData = [null, null, null, null, null, 37, 38, 35, 33, 35];
+
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [...Dates, '16 Mar', '17 Mar', '18 Mar', '19 Mar', '20 Mar'],
+                        datasets: [{
+                            label: 'Actual Temperature',
+                            data: actualData,
+                            borderColor: '#4361ee',
+                            backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3
+                        },
+                            {
+                                label: 'AI-Predicted Temperature',
+                                data: predictedData,
+                                borderColor: '#4895ef',
+                                borderWidth: 3,
+                                borderDash: [5, 5],
+                                fill: false,
+                                pointBackgroundColor: '#4895ef',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                tension: 0.3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 14
+                                    },
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleFont: {
+                                    size: 16
+                                },
+                                bodyFont: {
+                                    size: 14
+                                },
+                                padding: 12,
+                                displayColors: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Temperature in (°C)',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        animation: {
+                            duration: 2000,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+
+</html>

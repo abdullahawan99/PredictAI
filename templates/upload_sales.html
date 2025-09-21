@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>PredictAI | Sales upload</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            }
+
+            :root {
+                --primary: #2563eb;
+                --primary-dark: #1d4ed8;
+                --secondary: #0f172a;
+                --light-bg: #f8fafc;
+                --white: #ffffff;
+                --gray-light: #e2e8f0;
+                --gray: #94a3b8;
+                --gray-dark: #64748b;
+                --success: #10b981;
+                --error: #ef4444;
+                --border-radius: 12px;
+                --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+                --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            body {
+                background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 2rem;
+                color: var(--secondary);
+                line-height: 1.6;
+            }
+
+            .container {
+                display: flex;
+                max-width: 1200px;
+                width: 100%;
+                background: var(--white);
+                border-radius: 16px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                animation: fadeIn 0.8s ease-out;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .left-panel {
+                flex: 1;
+                background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+                color: var(--white);
+                padding: 3.5rem 2.5rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .left-panel::before {
+                content: '';
+                position: absolute;
+                top: -100px;
+                right: -100px;
+                width: 300px;
+                height: 300px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            .left-panel::after {
+                content: '';
+                position: absolute;
+                bottom: -150px;
+                left: -50px;
+                width: 250px;
+                height: 250px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 3rem;
+            }
+
+            .logo-icon {
+                background: white;
+                width: 44px;
+                height: 44px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+            }
+
+            .logo-icon img {
+                width: 50px;
+                height: 50px;
+                object-fit: contain;
+            }
+
+            .logo-text {
+                font-weight: 700;
+                font-size: 1.5rem;
+                letter-spacing: -0.5px;
+            }
+
+            .panel-title {
+                font-size: 2.25rem;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+                position: relative;
+                z-index: 2;
+            }
+
+            .panel-subtitle {
+                font-size: 1.1rem;
+                opacity: 0.9;
+                margin-bottom: 2.5rem;
+                max-width: 90%;
+                position: relative;
+                z-index: 2;
+            }
+
+            .requirements {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: var(--border-radius);
+                padding: 1.75rem;
+                position: relative;
+                z-index: 2;
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+            }
+
+            .requirements-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1.25rem;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .requirements-list {
+                list-style: none;
+            }
+
+            .requirements-list li {
+                margin-bottom: 0.9rem;
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .requirements-list li:last-child {
+                margin-bottom: 0;
+            }
+
+            .requirement-icon {
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 0.9rem;
+                margin-top: 4px;
+                flex-shrink: 0;
+            }
+
+            .right-panel {
+                flex: 1;
+                padding: 3.5rem;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .upload-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 3rem 2rem;
+                border: 2px dashed var(--gray-light);
+                border-radius: var(--border-radius);
+                background: var(--light-bg);
+                transition: var(--transition);
+                cursor: pointer;
+                margin-bottom: 2rem;
+                position: relative;
+            }
+
+            .upload-container:hover,
+            .upload-container.drag-over {
+                border-color: var(--primary);
+                background: rgba(37, 99, 235, 0.03);
+                transform: translateY(-3px);
+            }
+
+            .upload-icon {
+                font-size: 3.5rem;
+                color: var(--primary);
+                margin-bottom: 1.5rem;
+                transition: var(--transition);
+            }
+
+            .upload-container:hover .upload-icon {
+                transform: scale(1.1);
+            }
+
+            .upload-title {
+                font-size: 1.5rem;
+                font-weight: 600;
+                margin-bottom: 0.75rem;
+            }
+
+            .upload-subtitle {
+                color: var(--gray-dark);
+                margin-bottom: 1.5rem;
+                max-width: 80%;
+            }
+
+            .browse-btn {
+                background: var(--primary);
+                color: white;
+                border: none;
+                padding: 0.8rem 1.8rem;
+                border-radius: 8px;
+                font-weight: 500;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: var(--transition);
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.06);
+            }
+
+            .browse-btn:hover {
+                background: var(--primary-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.25), 0 4px 6px -2px rgba(37, 99, 235, 0.1);
+            }
+
+            .file-input {
+                display: none;
+            }
+
+            .supported-formats {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin-top: 1.5rem;
+                color: var(--gray-dark);
+                font-size: 0.9rem;
+            }
+
+            .supported-formats span {
+                background: var(--gray-light);
+                padding: 0.25rem 0.75rem;
+                border-radius: 20px;
+                font-size: 0.8rem;
+            }
+
+            .uploaded-files {
+                margin-top: 2rem;
+                animation: slideUp 0.5s ease-out;
+            }
+
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .uploaded-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .file-card {
+                background: var(--light-bg);
+                border-radius: var(--border-radius);
+                padding: 1.25rem;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                animation: fadeIn 0.4s ease-out;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+                transition: var(--transition);
+            }
+
+            .file-card:hover {
+                transform: translateX(5px);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            }
+
+            .file-icon {
+                background: rgba(37, 99, 235, 0.1);
+                color: var(--primary);
+                width: 44px;
+                height: 44px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.25rem;
+            }
+
+            .file-info {
+                flex: 1;
+            }
+
+            .file-name {
+                font-weight: 500;
+                margin-bottom: 4px;
+            }
+
+            .file-size {
+                color: var(--gray-dark);
+                font-size: 0.85rem;
+            }
+
+            .file-status {
+                color: var(--success);
+                font-weight: 500;
+                font-size: 0.9rem;
+            }
+
+            .upload-btn {
+                background: var(--secondary);
+                color: white;
+                border: none;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: var(--transition);
+                width: 100%;
+                margin-top: 2rem;
+                box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -1px rgba(15, 23, 42, 0.06);
+            }
+
+            .upload-btn:hover {
+                background: #0c1424;
+                transform: translateY(-2px);
+                box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.15), 0 4px 6px -2px rgba(15, 23, 42, 0.08);
+            }
+
+            .upload-btn:active {
+                transform: translateY(0);
+            }
+
+            .footer {
+                margin-top: auto;
+                padding-top: 2rem;
+                color: var(--gray-dark);
+                font-size: 0.9rem;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .footer a {
+                color: var(--primary);
+                text-decoration: none;
+                transition: var(--transition);
+            }
+
+            .footer a:hover {
+                text-decoration: underline;
+            }
+
+            .error-container {
+                position: absolute;
+                top: 30px;
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: center;
+                z-index: 20;
+                animation: fadeInDown 0.5s ease-out;
+            }
+
+            .alert-danger {
+                background: var(--error);
+                color: white;
+                padding: 12px 25px;
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+                font-weight: 500;
+                max-width: 80%;
+                text-align: center;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .close-error-btn {
+                margin-left: 15px;
+                cursor: pointer;
+                font-size: 20px;
+                font-weight: bold;
+                line-height: 1;
+                padding: 0 5px;
+                color: white;
+                float: right;
+            }
+
+            @keyframes fadeInDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .download-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 20px;
+                margin-top: 20px;
+                background: linear-gradient(135deg, #007bff, #0056b3);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .download-btn i {
+                transition: transform 0.3s ease;
+            }
+
+            .download-btn:hover {
+                background: linear-gradient(135deg, #339cff, #003f8a);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            .download-btn:hover i {
+                transform: translateY(2px);
+            }
+
+            .fixed-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-top: 0px solid #dee2e6;
+                background-color: transparent;
+                font-family: 'Inter', sans-serif;
+                padding: 1rem 0;
+                width: 100%;
+                text-align: center;
+                z-index: 1000;
+            }
+
+            .fixed-footer h5 {
+                color: #343a40;
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+            }
+
+            .fixed-footer p {
+                margin: 0;
+                color: #6c757d;
+                font-size: 0.9rem;
+            }
+
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .page-wrapper {
+                min-height: calc(100vh - 100px);
+            }
+
+
+
+
+            @media (max-width: 900px) {
+                .container {
+                    flex-direction: column;
+                }
+
+                .left-panel,
+                .right-panel {
+                    padding: 2.5rem;
+                }
+
+                .left-panel {
+                    border-radius: var(--border-radius) var(--border-radius) 0 0;
+                }
+            }
+
+            @media (max-width: 480px) {
+                body {
+                    padding: 1rem;
+                }
+
+                .left-panel,
+                .right-panel {
+                    padding: 2rem 1.5rem;
+                }
+
+                .panel-title {
+                    font-size: 1.8rem;
+                }
+
+                .upload-container {
+                    padding: 2rem 1.5rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+
+
+
+
+
+        <div class="page-wrapper">
+
+
+
+
+            <div class="error-container" id="errorContainer">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}
+                        <span class="close-error-btn" onclick="closeError(this)">&times;</span>
+                    </div>
+                {% endif %}
+            </div>
+
+
+            <div class="container">
+
+                <div class="left-panel">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Upload Icon">
+                        </div>
+                        <div class="logo-text">PredictAI</div>
+                    </div>
+                    <h1 class="panel-title">Upload Your CSV Data</h1>
+                    <p class="panel-subtitle">Securely import your data files to my platform. Follow the requirements below to ensure a successful upload.</p>
+
+                    <div class="requirements">
+                        <h2 class="requirements-title">
+                            <i class="fas fa-list-check"></i>
+                            CSV Requirements
+                        </h2>
+                        <ul class="requirements-list">
+                            <li>
+                                <i class="fas fa-check-circle requirement-icon"></i>
+                                <div>CSV must include: Date, Product, Price, Sales, Promo, Currency</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle requirement-icon"></i>
+                                <div>Only one product and one currency allowed</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle requirement-icon"></i>
+                                <div>All rows must have the same price</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle requirement-icon"></i>
+                                <div>At least 30 daily rows, no missing/duplicate dates</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle requirement-icon"></i>
+                                <div>Currency column must contain a valid symbol or code (e.g., $, USD)</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle requirement-icon"></i>
+                                <div>Download a sample CSV using the button for reference.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="right-panel">
+                    <form method="POST" action="{{ url_for('sales') }}" enctype="multipart/form-data">
+                        <div class="upload-container" id="dropZone">
+                            <div class="upload-icon">
+                                <i class="fas fa-file-csv"></i>
+                            </div>
+                            <h3 class="upload-title">Upload CSV File</h3>
+                            <p class="upload-subtitle">Drag & drop your file here or click to browse</p>
+                            <label class="browse-btn" for="fileInput" style="cursor: pointer;">
+                                <i class="fas fa-folder-open"></i>
+                                Browse Files
+                            </label>
+                            <input type="file" name="datafile" accept=".csv" class="file-input" id="fileInput" style="display: none;">
+
+                            <div class="supported-formats">
+                                Supported formats: <span>CSV</span>
+                            </div>
+                        </div>
+
+
+
+                        <button type="submit" name="upload" class="upload-btn">
+                            Process CSV File
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+
+
+                        <a href="{{ url_for('static', filename='sample_sales.csv') }}" download class="download-btn">
+                            <i class="fas fa-download"></i> Download Sample CSV
+                        </a>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer class="fixed-footer">
+            <h5>PredictAI</h5>
+            <p>Made by <strong>Muhammad Abdullah Awan</strong> &copy; 2025 </p>
+        </footer>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const dropZone = document.getElementById('dropZone');
+                const fileInput = document.getElementById('fileInput');
+
+
+                dropZone.addEventListener('click', (e) => {
+                    if (
+                        e.target.closest('.browse-btn') ||
+                        e.target === fileInput
+                    ) return;
+                    fileInput.click();
+                });
+
+
+                fileInput.addEventListener('click', () => {
+                    fileInput.value = '';
+                });
+
+
+                fileInput.addEventListener('change', handleFileSelect);
+
+
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, preventDefaults, false);
+                });
+
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+
+                function highlight() {
+                    dropZone.classList.add('drag-over');
+                }
+
+                function unhighlight() {
+                    dropZone.classList.remove('drag-over');
+                }
+
+
+                dropZone.addEventListener('drop', handleDrop, false);
+
+                function handleDrop(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    fileInput.files = files;
+                    handleFiles(files);
+                }
+
+                function handleFileSelect(e) {
+                    const files = e.target.files;
+                    handleFiles(files);
+                }
+
+                function handleFiles(files) {
+                    if (files.length > 0) {
+                        const file = files[0];
+                        if (file.name.endsWith('.csv')) {
+
+
+                            dropZone.querySelector('.upload-icon').innerHTML = '<i class="fas fa-check-circle" style="color: green;"></i>';
+                            dropZone.querySelector('.upload-title').textContent = 'File Ready!';
+                            dropZone.querySelector('.upload-subtitle').textContent = `${file.name} (${formatFileSize(file.size)})`;
+
+
+
+
+                        } else {
+                            alert('Please select a CSV file.');
+                        }
+                    }
+                }
+
+                function formatFileSize(bytes) {
+                    if (bytes === 0) return '0 Bytes';
+                    const k = 1024;
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                }
+            });
+
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const errorContainer = document.getElementById('errorContainer');
+
+
+                if (errorContainer) {
+
+                    if (performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD ||
+                        performance.getEntriesByType("navigation")[0].type === "back_forward") {
+                            errorContainer.innerHTML = '';
+                        }
+                }
+            });
+
+            function closeError(btn) {
+                const alertBox = btn.closest('.alert');
+                if (alertBox) {
+                    alertBox.remove();
+                }
+            }
+        </script>
+    </body>
+
+</html>

@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PredictAI | Sales Preview</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56e4;
+            --secondary: #06d6a0;
+            --warning: #ffd166;
+            --danger: #ef476f;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f4 100%);
+            color: #334155;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+
+        header {
+            background: transparent;
+            box-shadow: none;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+        }
+
+        .app-name {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+        }
+
+        .app-name span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+
+        .container {
+            width: 100%;
+            margin: 2rem 0;
+            flex: 1;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.8rem;
+            padding: 0 1.8rem;
+        }
+
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            padding: 1.8rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: cardEntrance 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
+        .card:nth-child(7) { animation-delay: 0.7s; }
+        .card:nth-child(8) { animation-delay: 0.8s; }
+        .card:nth-child(9) { animation-delay: 0.9s; }
+
+
+        .summary-card {
+            grid-column: span 12;
+            background: var(--gradient);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 2.5rem;
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 50%;
+        }
+
+        .summary-card::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            right: 10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .summary-card h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .summary-card p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .prediction-value {
+            font-size: 4.2rem;
+            font-weight: 800;
+            margin: 1.5rem 0;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .model-tag {
+            background: rgba(255, 255, 255, 0.18);
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-size: 1.05rem;
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+
+        .stat-card {
+            padding: 1.8rem;
+            border-left: 5px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            grid-column: span 3;
+        }
+
+        .stat-card.max {
+            border-left-color: var(--secondary);
+        }
+
+        .stat-card.min {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.r2 {
+            border-left-color: var(--dark);
+        }
+
+        .stat-title {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .stat-value {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .trend-up {
+            color: var(--secondary);
+        }
+
+        .trend-down {
+            color: var(--danger);
+        }
+
+
+        .product-card {
+            grid-column: span 6;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .product-icon {
+            width: 70px;
+            height: 70px;
+            background: #e0f2fe;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.8rem;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.15);
+        }
+
+        .product-details h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.3rem;
+            color: var(--dark);
+        }
+
+        .product-details p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .product-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .product-stat {
+            background: #f8fafc;
+            padding: 1.2rem;
+            border-radius: 16px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid #f1f5f9;
+        }
+
+        .product-stat:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            border-color: #e2e8f0;
+        }
+
+        .product-stat h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.7rem;
+            color: #64748b;
+        }
+
+        .product-stat p {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+
+        .model-card {
+            grid-column: span 6;
+            background: #f0f9ff;
+        }
+
+        .model-list {
+            list-style: none;
+        }
+
+        .model-list li {
+            padding: 1.2rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .model-list li:last-child {
+            border-bottom: none;
+        }
+
+        .model-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .model-icon {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .model-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .accuracy-bar {
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            margin-top: 0.7rem;
+            overflow: hidden;
+        }
+
+        .accuracy-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 92%;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .accuracy-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shine 1.5s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+
+        .chart-card {
+            grid-column: span 12;
+            padding: 1.8rem;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.8rem;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 0.7rem;
+        }
+
+        .chart-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            color: #64748b;
+        }
+
+        .chart-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .chart-btn:hover:not(.active) {
+            background: #e2e8f0;
+            color: var(--dark);
+        }
+
+        .chart-container {
+            height: 320px;
+            position: relative;
+        }
+
+
+        .fixed-footer {
+
+            border-top: 1px solid #dee2e6;
+            font-family: 'Inter', sans-serif;
+            padding: 1.5rem 0;
+            width: 100%;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .fixed-footer h5 {
+            color: #343a40;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .fixed-footer p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .custom-btn {
+          display: inline-block;
+          padding: 8px 40px;
+          border-radius: 6px;
+          font-size: 16px;
+          min-width: 250px;
+          text-align: center;
+          text-decoration: none;
+          cursor: pointer;
+          background-color: #4361ee;
+          color: white;
+          border: none;
+          transition: background-color 0.3s ease;
+        }
+        .custom-btn:hover {
+          background-color: #364fc7;
+        }
+        .center-container {
+          text-align: center;
+          margin: 3rem 0;
+        }
+        .download-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: background 0.3s ease;
+            z-index: 9999;
+        }
+
+        .download-button:hover {
+            background: #4338ca;
+        }
+
+
+        @media (max-width: 1200px) {
+            .stat-card {
+                grid-column: span 6;
+            }
+
+            .product-card,
+            .model-card {
+                grid-column: span 12;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 0 1rem;
+            }
+
+            .summary-card {
+                padding: 1.8rem;
+            }
+
+            .prediction-value {
+                font-size: 3.2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .stat-card {
+                grid-column: span 12;
+            }
+        }
+
+        @media (min-width: 1800px) {
+            .grid {
+                max-width: 1800px;
+                margin: 0 auto;
+            }
+
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+
+            <div class="app-name">Predict<span>AI</span></div>
+        </div>
+    </header>
+
+
+    <div class="container">
+        <div class="grid">
+
+            <div class="card summary-card">
+                <h2>Tomorrow's Predicted Sales</h2>
+                <p>ARIMA + XGBoost–based Forecasting</p>
+                <div class="prediction-value">{{ currency_symbol }}{{ tomorrow_sales }}</div>
+                <div class="model-tag">
+                    <i class="fas {{ trend_icon }}"></i> {{ percentage_change }}% {{ trend_label }} from today
+                </div>
+            </div>
+
+
+            <div class="card stat-card">
+                <div class="stat-title"><i class="fas fa-calculator"></i> Average Sales (15d)</div>
+                <div class="stat-value">{{ currency_symbol }}{{ avg_sales }}</div>
+                <div class="stat-trend trend-up">
+                    <i class=></i>
+                </div>
+            </div>
+
+            <div class="card stat-card max">
+                <div class="stat-title"><i class="fas fa-chart-line"></i> Max Sales (15d)</div>
+                <div class="stat-value">{{ currency_symbol }}{{ max_sales }}</div>
+                <div class="stat-trend">
+                    <i class="fas fa-calendar"></i> {{ max_sales_date_15_days }}
+                </div>
+            </div>
+
+            <div class="card stat-card min">
+                <div class="stat-title"><i class="fas fa-chart-bar"></i> Min Sales (15d)</div>
+                <div class="stat-value">{{ currency_symbol }}{{ min_sales }}</div>
+                <div class="stat-trend trend-down">
+                    <i class="fas fa-calendar"></i> {{ min_sales_date_15_days }}
+                </div>
+            </div>
+
+            <div class="card stat-card r2">
+                <div class="stat-title"><i class="fas fa-bullseye"></i> Model R² Score</div>
+                <div class="stat-value">{{ accuracy }}</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-bullseye"></i> ({{ accuracy_percent }}%)
+                </div>
+            </div>
+
+
+            <div class="card product-card">
+                <h2 class="card-title"><i class="fas fa-box"></i> Product Overview</h2>
+                <div class="product-info">
+                    <div class="product-icon">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <div class="product-details">
+                        <h3>{{ product }}</h3>
+                        <p>Category: {{ category }}</p>
+                    </div>
+                </div>
+
+                <div class="product-stats">
+                    <div class="product-stat">
+                        <h4>Unit Price</h4>
+                        <p>{{ currency_symbol }}{{ price }}</p>
+                    </div>
+                    <div class="product-stat">
+                        <h4>Units Sold (15d)</h4>
+                        <p>{{ "{:,}".format(units_sold_last_15_days) }}</p>
+                    </div>
+                    <div class="product-stat">
+                        <h4>Total Revenue</h4>
+                        <p>{{ currency_symbol }}{{ total_revenue }}</p>
+                    </div>
+                    <div class="product-stat">
+                        <h4>Return Rate</h4>
+                        <p>N/A</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card model-card">
+                <h2 class="card-title"><i class="fas fa-cogs"></i> Model Breakdown</h2>
+                <ul class="model-list">
+                    <li>
+                        <div class="model-label">
+                            <div class="model-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <span>Model Type</span>
+                        </div>
+                        <div class="model-value">Hybrid (ARIMA + XGBoost)</div>
+                    </li>
+                    <li>
+                        <div class="model-label">
+                            <div class="model-icon">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <span>Overall Accuracy</span>
+                        </div>
+                        <div class="model-value">{{ accuracy }} ({{ accuracy_percent }}%)</div>
+                    </li>
+                    <li>
+                        <div class="accuracy-bar">
+                            <div class="accuracy-fill"></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="model-label">
+                            <div class="model-icon">
+                                <i class="fas fa-cube"></i>
+                            </div>
+                            <span>Actual Prediction (Hybrid)</span>
+                        </div>
+                        <div class="model-value">{{ currency_symbol }}{{ tomorrow_sales }}</div>
+                    </li>
+                    <li>
+                        <div class="model-label">
+                            <div class="model-icon">
+                                <i class="fas fa-cubes"></i>
+                            </div>
+                            <span>ARIMA Prediction</span>
+                        </div>
+                        <div class="model-value">{{ currency_symbol }}{{ arima_prediction }}</div>
+                    </li>
+                    <li>
+                        <div class="model-label">
+                            <div class="">
+                                <i class=""></i>
+                            </div>
+                            <span></span>
+                        </div>
+                        <div class="model-value"></div>
+                    </li>
+                </ul>
+            </div>
+
+
+            {% if dates and sales %}
+            <div class="card chart-card mt-5">
+              <div class="chart-header d-flex justify-content-between align-items-center p-3">
+                <h2 class="card-title mb-0"><i class="fas fa-chart-line"></i> Sales Over Time</h2>
+                <div class="chart-actions d-flex align-items-center">
+                <div class="btn-group" role="group" aria-label="Select range">
+                  <button type="button" class="chart-btn btn btn-outline-primary" data-range="5">Last 5 days</button>
+                  <button type="button" class="chart-btn btn btn-outline-primary" data-range="7">Last 7 days</button>
+                  <button type="button" class="chart-btn btn btn-primary active" data-range="15">Last 15 days</button>
+                </div>
+
+                </div>
+              </div>
+              <div class="chart-container p-3" style="height: 400px;">
+                <canvas id="salesChart"></canvas>
+              </div>
+            </div>
+            {% else %}
+            <p class="text-muted fst-italic text-center mt-4">No detailed chart data available.</p>
+            {% endif %}
+
+
+            {% if importances %}
+            <div class="card chart-card mt-5">
+              <div class="chart-header p-3">
+                <h2 class="card-title"><i class="fas fa-chart-bar"></i> Feature Importance</h2>
+              </div>
+              <div class="chart-container p-3" style="height: 400px;">
+                <canvas id="importanceChart"></canvas>
+              </div>
+            </div>
+            {% endif %}
+
+
+            <div class="center-container">
+              <a href="/" class="custom-btn">← Upload Another File</a>
+            </div>
+        </div>
+    </div>
+
+            <footer class="fixed-footer">
+                <h5>PredictAI</h5>
+                <p>Made by <strong>Muhammad Abdullah Awan</strong> &copy; 2025 </p>
+            </footer>
+
+
+
+
+
+
+
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+            {% if dates and sales %}
+            <script>
+              const allDates = {{ dates | tojson }};
+              const allSales = {{ sales | tojson }};
+              const predictedDate = "{{ predicted_date }}";
+              const predictedSales = {{ predicted_sales }};
+              const ctx = document.getElementById('salesChart').getContext('2d');
+              let chart;
+
+              function createChartData(range) {
+                const dates = allDates.slice(-range);
+                const sales = allSales.slice(-range);
+                return {
+                  dates: [...dates, predictedDate],
+                  sales: [...sales, predictedSales]
+                };
+              }
+
+
+              const salesCtx = document.getElementById('salesChart').getContext('2d');
+              const gradient = salesCtx.createLinearGradient(0, 0, 0, 400);
+              gradient.addColorStop(0, 'rgba(67, 97, 238, 0.4)');
+              gradient.addColorStop(1, 'rgba(67, 97, 238, 0.05)');
+
+
+              function renderChart(range) {
+                const data = createChartData(range);
+                const actualLength = data.sales.length - 1;
+
+                const datasets = [
+                  {
+                    label: 'Actual Sales',
+                    data: data.sales.slice(0, actualLength),
+                    borderColor: '#4361ee',
+                    backgroundColor: gradient,
+                    borderWidth: 4,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#4361ee',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 8,
+                    fill: true,
+                    tension: 0.4,
+                  },
+                  {
+                    label: 'Predicted Sales',
+                    data: Array(actualLength - 1).fill(null).concat([data.sales[actualLength - 1], data.sales[actualLength]]),
+                    borderColor: '#4361ee',
+                    backgroundColor: '#1984FF',
+                    borderDash: [5, 5],
+                    fill: false,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    tension: 0,
+                  }
+                ];
+
+                const config = {
+                  type: 'line',
+                  data: {
+                    labels: data.dates,
+                    datasets: datasets
+                  },
+                  options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                      x: { title: { display: true, text: 'Date' } },
+                      y: { title: { display: true, text: 'Units Sold' }, beginAtZero: true }
+                    },
+                    plugins: {
+                      tooltip: { mode: 'index', intersect: false }
+                    },
+                    interaction: {
+                      mode: 'nearest',
+                      intersect: false
+                    }
+                  }
+                };
+
+                if (chart) chart.destroy();
+                chart = new Chart(ctx, config);
+              }
+
+
+              renderChart(15);
+
+
+              document.getElementById('rangeSelector').addEventListener('change', function () {
+                renderChart(parseInt(this.value));
+              });
+            </script>
+            {% endif %}
+
+
+            {% if importances %}
+            <script>
+              const importanceData = {{ importances | tojson }};
+              const impLabels = Object.keys(importanceData);
+              const impValues = Object.values(importanceData);
+
+              const impCtx = document.getElementById('importanceChart').getContext('2d');
+              new Chart(impCtx, {
+                type: 'bar',
+                data: {
+                  labels: impLabels,
+                  datasets: [{
+                    label: 'Feature Influence',
+                    data: impValues,
+                    backgroundColor: 'rgba(67, 97, 238, 0.8)',
+                    borderColor: 'rgba(67, 97, 238, 1)',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                  }]
+                },
+                options: {
+                  indexAxis: 'y',
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                      backgroundColor: 'rgba(30, 41, 59, 0.95)',
+                      padding: 12,
+                      titleFont: { size: 14, weight: 'bold' },
+                      bodyFont: { size: 14 },
+                      callbacks: {
+                        label: function (context) {
+                          return `Importance: ${context.parsed.x}%`;
+                        }
+                      }
+                    }
+                  },
+                  scales: {
+                    x: {
+                      beginAtZero: true,
+
+                      ticks: { callback: val => `${val}%` },
+                      title: { display: true, text: 'Relative Importance (%)' }
+                    },
+                    y: {
+                      grid: { display: false }
+                    }
+                  }
+                }
+              });
+            </script>
+            {% endif %}
+
+
+            <script>
+
+
+              const chartBtns = document.querySelectorAll('.chart-btn');
+
+              chartBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+
+                  chartBtns.forEach(b => b.classList.remove('active'));
+
+                  this.classList.add('active');
+
+                  const range = parseInt(this.getAttribute('data-range'));
+                  renderChart(range);
+                });
+              });
+
+
+
+              const cards = document.querySelectorAll('.card');
+              cards.forEach(card => {
+                card.addEventListener('mouseenter', function () {
+                  this.style.transform = 'translateY(-8px)';
+                  this.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.12)';
+                });
+                card.addEventListener('mouseleave', function () {
+                  this.style.transform = 'translateY(0)';
+                  this.style.boxShadow = '0 6px 18px rgba(0, 0, 0, 0.08)';
+                });
+              });
+            </script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
